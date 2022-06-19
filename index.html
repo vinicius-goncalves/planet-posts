@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        .custom-center-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body class="deep-purple">
+
+    <nav>
+        <div class="nav-wrapper deep-purple lighten-1">
+            <a href="#" class="brand-logo" style="margin-left: 10px;"><i class="material-icons">travel_explore</i></a>
+            <a href="#" class="sidenav-trigger" data-target="mobile"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down" data-js="nav-bar">
+                <li data-js="logged-in" data-role="admin"><a href="#">Create new post</a></li>
+                <li data-js="logged-in" data-role="user"><a href="#">See posts</a></li>
+                <li data-js="logged-in" data-role="user"><a href="#">Sign out</a></li>
+                <li data-js="logged-out" data-role="user"><a href="#">Sign in</a></li>
+                <li data-js="logged-out" data-role="user"><a href="#">Sign up</a></li>
+            </ul>
+        </div>
+
+    </nav>
+
+    <ul class="sidenav" id="mobile" data-js="nav-bar">
+        <li data-js="logged-in" data-role="admin"><a href="#">Create new post</a></li>
+        <li data-js="logged-in" data-role="user"><a href="#">See posts</a></li>
+        <li data-js="logged-in" data-role="user"><a href="#">Sign out</a></li>
+        <li data-js="logged-out" data-role="user"><a href="#">Sign in</a></li>
+        <li data-js="logged-out" data-role="user"><a href="#">Sign up</a></li>
+    </ul>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        'use strict'
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const elems = document.querySelectorAll('.sidenav')
+            const instances = M.Sidenav.init(elems)
+        })
+    </script>
+</body>
+
+</html>
