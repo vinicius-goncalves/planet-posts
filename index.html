@@ -16,45 +16,261 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        .modal {
+            border-radius: 7px;
+        }
+
+        .card-image img {
+            width: 128px;
+        }
+        
+        .card {
+            border-radius: 7px;
+            overflow: hidden;
+        }
+
+        .indicator-item {
+            color: red;
+            background: red;
+        }
     </style>
 </head>
 
 <body class="deep-purple">
-
     <nav>
         <div class="nav-wrapper deep-purple lighten-1">
-            <a href="#" class="brand-logo" style="margin-left: 10px;"><i class="material-icons">travel_explore</i></a>
+            <a href="#" class="brand-logo" style="margin-left: 10px;"><i class="material-icons" style="font-size: 42px;">travel_explore</i></a>
             <a href="#" class="sidenav-trigger" data-target="mobile"><i class="material-icons">menu</i></a>
-            <ul class="right hide-on-med-and-down" data-js="nav-bar">
-                <li data-js="logged-in" data-role="admin"><a href="#">Create new post</a></li>
-                <li data-js="logged-in" data-role="user"><a href="#">See posts</a></li>
-                <li data-js="logged-in" data-role="user"><a href="#">Sign out</a></li>
-                <li data-js="logged-out" data-role="user"><a href="#">Login</a></li>
-                <li data-js="logged-out" data-role="user"><a href="#">Register</a></li>
+
+            <ul class="right hide-on-med-and-down" data-js="nav-bar" style="display: none">
+                <li data-js="logged-in" data-role="user">
+                    <a href="#" class="modal-trigger" data-target="create-new-post">Create new post</a>
+                </li>
+                <li data-js="logged-in" data-role="user">
+                    <a href="#">See posts</a>
+                </li>
+                <li data-js="logged-in" data-role="user">
+                    <a href="#" class="loggout" data-js="loggout-button">Logout</a>
+                </li>
+                <li data-js="logged-out" data-role="user">
+                    <a href="#" class="modal-trigger btn purple lighten-1" data-target="login-modal">Login</a>
+                </li>
+                <li data-js="logged-out" data-role="user">
+                    <a href="#" 
+                        class="btn waves-effect modal-trigger purple lighten-1" 
+                        data-target="register-modal">Register</a>
+                </li>
             </ul>
+
         </div>
     </nav>
 
-    <ul class="sidenav" id="mobile" data-js="nav-bar">
-        <li data-js="logged-in" data-role="admin"><a href="#">Create new post</a></li>
-        <li data-js="logged-in" data-role="user"><a href="#">See posts</a></li>
-        <li data-js="logged-in" data-role="user"><a href="#">Sign out</a></li>
-        <li data-js="logged-out" data-role="user"><a href="#">Login</a></li>
-        <li data-js="logged-out" data-role="user"><a href="#">Register</a></li>
+    <!-- Sidenav (mobile) -->
+    <ul class="sidenav deep-purple lighten-1" id="mobile" data-js="nav-bar">
+        <li data-js="logged-in" data-role="admin"><a href="#" class="white-text">Create new post</a></li>
+        <li data-js="logged-in" data-role="user"><a href="#" class="white-text">See posts</a></li>
+        <li data-js="logged-in" data-role="user"><a href="#" class="white-text" data-js="loggout-button">Loggout</a></li>
+        <li data-js="logged-out" data-role="user"><a href="#" class="white-text">Login</a></li>
+        <li data-js="logged-out" data-role="user">
+            <a href="#" data-target="register-modal" 
+                class="btn waves-effect purple lighten-1 white-text modal-trigger">Register</a>
+        </li>
     </ul>
 
+    <div class="slider">
+        <ul class="slides">
+            <li>
+                <img src="images/first-image.jpg" alt="">
+                <div class="caption center-align">
+                    <h2>Space</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, aut voluptate voluptatem consectetur distinctio modi.</p>
+                </div>
+            </li>
+            <li>
+                <img src="images/second-image.jpg">
+                <div class="caption">
+                    <h2>Universe</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates est repellat quia quam voluptate iusto.</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Register modal -->
+    <div id="register-modal" class="modal" style="border-radius: 10px;">
+        <div class="modal-content">
+            <h5 class="center-align">Create a new account</h5>
+            <form class="register-account-form" autocomplete="off">
+
+                <div class="input-field">
+                    <i class="material-icons prefix rigth">mail</i>
+                    <input type="email" class="validate" name="email">
+                    <label for="email">Email</label>
+                </div>
+
+                <div class="input-field">
+                    <i class="material-icons prefix">person</i>
+                    <label for="username">Username</label>
+                    <input type="text" name="username">
+                </div>
+
+                <div class="input-field">
+                    <i class="material-icons prefix">lock</i>
+                    <input type="password" name="password">
+                    <label for="password">Password</label>
+                </div>
+
+                <input type="submit" class="btn valign purple lighten-1" value="Create an account">
+            </form>
+        </div>
+    </div>
+
+    <!-- Login modal -->
+    <div id="login-modal" class="modal" style="border-radius: 10px;">
+        <div class="modal-content">
+            <h5 class="center-align">Login in your account</h5>
+            <form class="login-account-form" method="POST" autocomplete="off">
+                <div class="input-field">
+                    <i class="material-icons prefix rigth">mail</i>
+                    <input type="email" class="validate" name="email">
+                    <label for="email">Email</label>
+                </div>
+
+                <div class="input-field">
+                    <i class="material-icons prefix">lock</i>
+                    <input type="password" name="password">
+                    <label for="password">Password</label>
+                </div>
+
+                <p>
+                    <label>
+                        <input type="checkbox" name="remember" class="filled-in">
+                        <span>Remember my details</span>
+                    </label>
+                </p>
+
+                <input type="submit" class="btn valign purple lighten-1" value="Login">
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Create new post -->
+    <div id="create-new-post" class="modal">
+        <div class="modal-content">
+            <h4>Create a new post</h4>
+            <div class="input-field">
+                <i class="material-icons prefix">toc</i>
+                <input type="text" name="post_title">
+                <label for="post_title">Post title</label>
+            </div>
+            <div class="input-field">
+                <i class="material-icons prefix">list_alt</i>
+                <input type="text" name="post_description">
+                <label for="post_description">Post description</label>
+            </div>
+            <div class="input-field file-field">
+                <div class="btn purple lighten-1">
+                    <span>Send an image</span>
+                    <input type="file">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path" type="text" placeholder="Send an image to post">
+                </div>
+            </div>
+            <div class="input-field center-align">
+                <div class="btn purple lighten-1">
+                    <a href="#" class="white-text" data-js="create-post">Create</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post sections -->
+    <div class="container hide-on-med-and-down">
+        <div class="row">
+            <div class="col s6">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="images/first-image.jpg" class="responsive-image">
+                        <span class="card-title">Lorem</span>
+                        <a class="btn-floating halfway-fab purple waves-effect activator right"><i class="material-icons">add</i></a>
+                    </div>
+                    <div class="card-content">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam, ex!</p>
+                    </div>
+                    <div class="card-reveal">
+                        <span class="card-title"><i class="material-icons">close</i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col s6">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="images/second-image.jpg">
+                        <span class="card-title">Lorem</span>
+                    </div>
+                    <div class="card-content">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, ex.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile content -->
+    <div class="container hide-on-large-only show-on-med-and-down">
+        <div class="row">
+            <div class="col m12">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="images/first-image.jpg" class="responsive-image">
+                        <span class="card-title">Lorem Mobile</span>
+                    </div>
+                    <div class="card-content">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam, ex!</p>
+                    </div>
+                </div>
+                <div class="card-reveal">
+
+                </div>
+            </div>
+            <div class="col m12">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="images/second-image.jpg">
+                        <span class="card-title">Lorem Mobile</span>
+                    </div>
+                    <div class="card-content">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, ex.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
     <!-- Compiled and minified JavaScript -->
     <script src="app.js" type="module"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
         'use strict'
-        
+
         document.addEventListener('DOMContentLoaded', function () {
-            const elems = document.querySelectorAll('.sidenav')
-            const instances = M.Sidenav.init(elems)
+            const sidenavs = document.querySelectorAll('.sidenav')
+            M.Sidenav.init(sidenavs)
+
+            const modals = document.querySelectorAll('.modal')
+            M.Modal.init(modals)
+
+            const sliders = document.querySelectorAll('.slider')
+            M.Slider.init(sliders)
+
+            // M.Modal.getInstance(document.querySelectorAll('.modal')[2]).open()
         })
     </script>
 </body>
 
 </html>
+
