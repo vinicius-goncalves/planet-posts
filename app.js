@@ -1,7 +1,7 @@
 import { db, auth, storage } from './auth.js'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js"
 import { setDoc, doc, getDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js"
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js"
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js"
 
 const registerAccountForm = document.querySelector('#register-modal')
 const loginAccountForm = document.querySelector('#login-modal')
@@ -173,14 +173,53 @@ createNewPostContainer.addEventListener('click', async event => {
     if(event.target.dataset.js === "create-post") {
         getDoc(doc(db, "users_posts", auth.currentUser.uid)).then(async documentReference => {
             if(documentReference.exists()) {
+                const progressDOM = document.querySelector('.determinate')
                 const storageReference = ref(storage, 'images_posts/'+postImage.name)
-                const imageReference = await uploadBytes(storageReference, postImage)
 
-                const image = await getDownloadURL(ref(storage, imageReference.metadata.fullPath))
+                const imageReference = uploadBytesResumable(storageReference, postImage)
+                const newElement = document.createElement('span')
+                document.querySelector('[data-js="create-post"]').parentElement.classList.add('disabled')
+                
+                imageReference.on('state_changed', (imageSnapshot) => {
+                    const percentage = Math.floor((imageSnapshot.bytesTransferred / imageSnapshot.totalBytes) * 100)
+                    newElement.textContent = percentage + "%"
+                    progressDOM.parentElement.insertAdjacentElement('afterend', newElement)
+                    progressDOM.style.width = percentage + '%'
+                }, (error) => {
+                    console.log(error)
+                }, async () => {
+                    const image = await getDownloadURL(ref(storage, imageReference._metadata.fullPath))
+                    updateDoc(doc(db, "users_posts", auth.currentUser.uid), {
+                        [`posts.${generateNewId}`]: [image, `${postTitle.value}`, `${postDescription.value}`]
+                    })
+                    postTitle.value = ""
+                    postDescription.value = ""
+                    postImage.value = ""
+                    progressDOM.style.width = "0"
+                    document.querySelector('.file-path').value = ""
+                    newElement.textContent = "Posted!"
+                    
+                    document.documentElement.scrollTop = document.documentElement.scrollHeight - document.documentElement.scrollTop
+                    document.querySelector('[data-js="create-post"]').parentElement.classList.remove('disabled')
 
-                updateDoc(doc(db, "users_posts", auth.currentUser.uid), {
-                    [`posts.${generateNewId}`]: [image, `${postTitle.value}`, `${postDescription.value}`]
+                    let i = 5
+                    let interval = null
+                    interval = setInterval(() => {
+                        console.log(interval)
+                        i--
+                        newElement.textContent = "Posted! Closed in: " + i
+                        
+                        if(i === 1 && interval != null) {
+                            newElement.remove()
+                            M.Modal.getInstance(document.querySelector('#create-new-post')).close()
+                            clearInterval(interval)
+                        }
+
+                    }, 1000)
+
                 })
+
+
             }else {
                 setDoc(doc(db, "users_posts", auth.currentUser.uid), {
                     userUid: auth.currentUser.uid,
@@ -190,3 +229,11 @@ createNewPostContainer.addEventListener('click', async event => {
         })
     }
 })
+
+window.onscroll = () => {
+    const dE = document.documentElement
+    const cH = dE.clientHeight
+    // console.log(dE.clientHeight)
+    const x = dE.scrollHeight - dE.scrollTop === cH ? 'Sim' : 'Não'
+    console.log(x)
+}

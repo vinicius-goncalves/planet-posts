@@ -30,9 +30,39 @@
             overflow: hidden;
         }
 
-        .indicator-item {
+        /* .indicator-item {
             color: red;
             background: red;
+        } */
+
+        .image-section {
+            position: relative;
+            width: 128px;
+            margin: auto;
+            user-select: none;
+            -ms-user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .camera-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: gray;
+            font-size: 48px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .image-section:hover .camera-icon {
+            display: block;
+            cursor: pointer;
+        }
+        
+        #send-image-profile {
+            display: none;
         }
     </style>
 </head>
@@ -51,6 +81,9 @@
                 </li>
                 <li data-js="logged-in" data-role="user">
                     <a href="#">See posts</a>
+                </li>
+                <li data-js="logged-in" data-role="user">
+                    <a href="#" class="modal-trigger" data-target="account-modal">My account</a>
                 </li>
                 <li data-js="logged-in" data-role="user">
                     <a href="#" class="loggout" data-js="loggout-button">Logout</a>
@@ -181,8 +214,8 @@
                     <input class="file-path" type="text" placeholder="Send an image to post">
                 </div>
             </div>
-            <div class="progress" style="background-color: #b4b4b4;">
-                <div class="indeterminate purple"></div>
+            <div class="progress" style="background-color: #b9b9b9;">
+                <div class="determinate purple lighten-1"></div>
             </div>
             <div class="input-field center-align">
                 <a href="#" class="btn" id="generate-lorem-button">Lorem generate</a>
@@ -190,6 +223,19 @@
                     <a href="#" class="white-text" data-js="create-post">Create</a>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Account modal -->
+    <div id="account-modal" class="modal">
+        <div class="modal-content center-align">
+            <div class="image-section">
+                <img src="images/user-photo.jpg" alt="" width="128" style="border-radius: 50%;">
+                <i class="material-icons camera-icon">photo_camera</i>
+            </div>
+            <input type="file" id="send-image-profile">
+            <h4>User name</h4>
+            <p>User email</p>
         </div>
     </div>
 
@@ -282,7 +328,7 @@
             const tooltips = document.querySelectorAll('.tooltipped')
             M.Tooltip.init(tooltips)
 
-            M.Modal.getInstance(document.querySelectorAll('.modal')[2]).open()
+            M.Modal.getInstance(document.querySelectorAll('.modal')[3]).open()
         })
     </script>
 </body>
