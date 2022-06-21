@@ -1,11 +1,14 @@
 import { db, auth, storage } from './auth.js'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js"
 import { setDoc, doc, getDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js"
-import { ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js"
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js"
 
 const registerAccountForm = document.querySelector('#register-modal')
 const loginAccountForm = document.querySelector('#login-modal')
 const createNewPostContainer = document.querySelector('#create-new-post')
+const imageSendInput = document.querySelector('#image-send-input')
+
+const desktopItems = document.querySelector('.desktop-items') 
 
 const navbar = document.querySelectorAll('[data-js="nav-bar"]')
 
@@ -17,10 +20,60 @@ onAuthStateChanged(auth, async (user) => {
     }
 })
 
-function UserDetails(email, password) {
-    this.email = email
-    this.password = password
-}
+
+setTimeout(() => {
+    onSnapshot(doc(db, "users_posts", auth.currentUser.uid), doc => {
+        desktopItems.innerHTML = ""
+        if(doc.data().posts !== undefined) {
+            const post = Object.values(doc.data().posts)
+            const arrays = post.map(array => array)
+            for(let i in arrays) {
+                let img, title, description = null
+                for(let _ in arrays[i]) {
+                    const [x, y, z] = arrays[i]
+                    img = x
+                    title = y
+                    description = z
+                }
+
+                desktopItems.innerHTML += 
+                    `<div class="col s6">
+                        <div class="card">
+                            <div class="card-image">
+                                <img src="${img}">
+                                <span class="card-title">${title}</span>
+                                <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
+                            </div>
+                            <div class="card-content">
+                                <p>${description}</p>
+                                <div class="chip" style="margin-top: 10px;">
+                                    <img src="images/user-photo.jpg" alt="">
+                                    <span>Posted by gonssalviz</span>
+                                </div>
+                            </div>
+
+                            <div class="card-reveal">
+                                <span class="card-title"><i class="material-icons">close</i></span>
+                                <h5>Lorem, ipsum dolor.</h5>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
+
+                                <div class="chip">
+                                    <img src="images/user-photo.jpg" alt="">
+                                    <span>Posted by gonssalviz</span>
+                                </div>
+
+                                <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
+                            </div>
+
+                        </div>
+                    </div>`
+            }
+        }else {
+            console.log('Retornado')
+            return
+        }
+    })
+}, 2000)
 
 const setupNavbar = (user) => {
     const eachNavBar = [...navbar]
@@ -101,15 +154,32 @@ const randomCharacters = (length, characters) => {
 
 createNewPostContainer.addEventListener('click', async event => {
 
-    const idGenerated = randomCharacters(5, '12345')
-
+    const postImage = imageSendInput.files[0]
     const postTitle = createNewPostContainer.querySelector('[name="post_title"]')
     const postDescription = createNewPostContainer.querySelector('[name="post_description"]')
+
+    // if(postTitle.value === '' || postDescription.value === '') {
+    //     console.log('Insira um valor antes')
+    //     return
+    // }
+
+    const generateNewId = randomCharacters(6, 'ABCDE123450')
+    
+    if(event.target.id === "generate-lorem-button"){
+        postTitle.value = "Lorem ipsum dolor sit amet."
+        postDescription.value = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora, libero!"
+    }
+
     if(event.target.dataset.js === "create-post") {
-        getDoc(doc(db, "users_posts", auth.currentUser.uid)).then(a => {
-            if(a.exists()) {
+        getDoc(doc(db, "users_posts", auth.currentUser.uid)).then(async documentReference => {
+            if(documentReference.exists()) {
+                const storageReference = ref(storage, 'images_posts/'+postImage.name)
+                const imageReference = await uploadBytes(storageReference, postImage)
+
+                const image = await getDownloadURL(ref(storage, imageReference.metadata.fullPath))
+
                 updateDoc(doc(db, "users_posts", auth.currentUser.uid), {
-                    [`posts.${idGenerated}`]: ['img', `${postTitle.value}`, `${postDescription.value}`]
+                    [`posts.${generateNewId}`]: [image, `${postTitle.value}`, `${postDescription.value}`]
                 })
             }else {
                 setDoc(doc(db, "users_posts", auth.currentUser.uid), {
@@ -120,59 +190,3 @@ createNewPostContainer.addEventListener('click', async event => {
         })
     }
 })
-
-const desktopItems = document.querySelector('.desktop-items') 
-
-setTimeout(() => {
-    onSnapshot(doc(db, "users_posts", auth.currentUser.uid), doc => {
-        desktopItems.innerHTML = ""
-        if(doc.data().posts !== undefined) {
-            const post = Object.values(doc.data().posts)
-            const arrays = post.map(array => array)
-            for(let i in arrays) {
-                let img, title, description = null
-                for(let _ in arrays[i]) {
-                    const [x, y, z] = arrays[i]
-                    img = x
-                    title = y
-                    description = z
-                }
-
-                desktopItems.innerHTML += 
-                    `<div class="col s6">
-                        <div class="card">
-                            <div class="card-image">
-                                <img src="images/first-image.jpg" class="responsive-image">
-                                <span class="card-title">${title}</span>
-                                <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
-                            </div>
-                            <div class="card-content">
-                                <p>${description}</p>
-                                <div class="chip" style="margin-top: 10px;">
-                                    <img src="images/user-photo.jpg" alt="">
-                                    <span>Posted by gonssalviz</span>
-                                </div>
-                            </div>
-
-                            <div class="card-reveal">
-                                <span class="card-title"><i class="material-icons">close</i></span>
-                                <h5>Lorem, ipsum dolor.</h5>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
-
-                                <div class="chip">
-                                    <img src="images/user-photo.jpg" alt="">
-                                    <span>Posted by gonssalviz</span>
-                                </div>
-
-                                <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
-                            </div>
-
-                        </div>
-                    </div>`
-            }
-        }else {
-            console.log('Retornado')
-            return
-        }
-    })
-}, 2000)

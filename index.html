@@ -38,6 +38,8 @@
 </head>
 
 <body class="deep-purple">
+
+    <!-- Desktop navbar-->
     <nav>
         <div class="nav-wrapper deep-purple lighten-1">
             <a href="#" class="brand-logo" style="margin-left: 10px;"><i class="material-icons" style="font-size: 42px;">travel_explore</i></a>
@@ -173,7 +175,7 @@
             <div class="input-field file-field">
                 <div class="btn purple lighten-1">
                     <span>Send an image</span>
-                    <input type="file">
+                    <input type="file" id="image-send-input">
                 </div>
                 <div class="file-path-wrapper">
                     <input class="file-path" type="text" placeholder="Send an image to post">
@@ -183,6 +185,7 @@
                 <div class="indeterminate purple"></div>
             </div>
             <div class="input-field center-align">
+                <a href="#" class="btn" id="generate-lorem-button">Lorem generate</a>
                 <div class="btn purple lighten-1">
                     <a href="#" class="white-text" data-js="create-post">Create</a>
                 </div>
