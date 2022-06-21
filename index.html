@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PlanetPosts</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -179,6 +179,9 @@
                     <input class="file-path" type="text" placeholder="Send an image to post">
                 </div>
             </div>
+            <div class="progress" style="background-color: #b4b4b4;">
+                <div class="indeterminate purple"></div>
+            </div>
             <div class="input-field center-align">
                 <div class="btn purple lighten-1">
                     <a href="#" class="white-text" data-js="create-post">Create</a>
@@ -188,34 +191,40 @@
     </div>
 
     <!-- Post sections -->
+    <!-- Desktop content -->
     <div class="container hide-on-med-and-down">
-        <div class="row">
+        <div class="row desktop-items">
             <div class="col s6">
                 <div class="card">
                     <div class="card-image">
                         <img src="images/first-image.jpg" class="responsive-image">
                         <span class="card-title">Lorem</span>
-                        <a class="btn-floating halfway-fab purple waves-effect activator right"><i class="material-icons">add</i></a>
+                        <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
                     </div>
                     <div class="card-content">
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam, ex!</p>
+                        <div class="chip" style="margin-top: 10px;">
+                            <img src="images/user-photo.jpg" alt="">
+                            <span>Posted by gonssalviz</span>
+                        </div>
                     </div>
+
                     <div class="card-reveal">
                         <span class="card-title"><i class="material-icons">close</i></span>
+                        <h5>Lorem, ipsum dolor.</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
+
+                        <div class="chip">
+                            <img src="images/user-photo.jpg" alt="">
+                            <span>Posted by gonssalviz</span>
+                        </div>
+
+                        <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
                     </div>
+
                 </div>
             </div>
-            <div class="col s6">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="images/second-image.jpg">
-                        <span class="card-title">Lorem</span>
-                    </div>
-                    <div class="card-content">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, ex.</p>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -267,7 +276,10 @@
             const sliders = document.querySelectorAll('.slider')
             M.Slider.init(sliders)
 
-            // M.Modal.getInstance(document.querySelectorAll('.modal')[2]).open()
+            const tooltips = document.querySelectorAll('.tooltipped')
+            M.Tooltip.init(tooltips)
+
+            M.Modal.getInstance(document.querySelectorAll('.modal')[2]).open()
         })
     </script>
 </body>
