@@ -1,7 +1,12 @@
-import { db, auth, storage } from './auth.js'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js"
-import { setDoc, doc, getDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js"
-import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js"
+import { db, auth, storage } from './auth'
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    onAuthStateChanged, 
+    updateProfile, 
+    signOut } from "firebase-auth"
+import { setDoc, doc, getDoc, updateDoc, onSnapshot } from "firebase-firestore"
+import { ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "firebase-storage"
 
 const registerAccountForm = document.querySelector('#register-modal')
 const loginAccountForm = document.querySelector('#login-modal')
@@ -9,6 +14,10 @@ const createNewPostContainer = document.querySelector('#create-new-post')
 const imageSendInput = document.querySelector('#image-send-input')
 
 const desktopItems = document.querySelector('.desktop-items') 
+
+const newAccountPictureSection = document.querySelector('.image-section')
+const inputNewFile = document.querySelector('#send-image-profile')
+
 
 const navbar = document.querySelectorAll('[data-js="nav-bar"]')
 
@@ -123,6 +132,11 @@ registerAccountForm.addEventListener('submit', (event) => {
     })
 })
 
+function userDetails(email, password) {
+    this.email = email 
+    this.password = password
+}
+
 loginAccountForm.addEventListener('submit', (event) => {
     event.preventDefault()
 
@@ -130,7 +144,7 @@ loginAccountForm.addEventListener('submit', (event) => {
     const password = event.target.password.value
 
     if(event.target.remember.checked) {
-        const userLocal = new UserDetails(email, password)
+        const userLocal = new userDetails(email, password)
         localStorage.setItem('userdetails', JSON.stringify(userLocal, null, 2))
         console.log(localStorage.getItem('userdetails'))
         
@@ -230,10 +244,29 @@ createNewPostContainer.addEventListener('click', async event => {
     }
 })
 
-window.onscroll = () => {
-    const dE = document.documentElement
-    const cH = dE.clientHeight
-    // console.log(dE.clientHeight)
-    const x = dE.scrollHeight - dE.scrollTop === cH ? 'Sim' : 'Não'
-    console.log(x)
-}
+newAccountPictureSection.addEventListener('click', () => {
+    inputNewFile.click()
+    console.log(auth)
+})
+
+const validFiles = ['jpg', 'jpeg', 'png', 'gif']
+
+inputNewFile.addEventListener('change', async (event) => {
+    const photo = event.target.files[0]
+    const photoType = photo.type.replace('image/', '')
+    if(!validFiles.includes(photoType)) {
+        console.log('Please, input a value that is: ' + validFiles.join(', '))
+        return
+    }
+
+    const blob = new Blob([photo], { type: 'image/' + photoType})
+    const url = URL.createObjectURL(photo)
+    const pictureProfileReference = ref(storage, 'users_profile_picture/'+photo.name)
+    const resultTask = await uploadBytes(pictureProfileReference, photo)
+    const fileToDownload = await getDownloadURL(pictureProfileReference, resultTask.metadata.fullPath)
+    // updateProfile(auth, {
+    //     photoURL
+    // })
+    
+    document.querySelector('.user-logo').src = url
+})
