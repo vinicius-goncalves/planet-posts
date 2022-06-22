@@ -1,12 +1,7 @@
 import { db, auth, storage } from './auth'
-import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    onAuthStateChanged, 
-    updateProfile, 
-    signOut } from "firebase-auth"
-import { setDoc, doc, getDoc, updateDoc, onSnapshot } from "firebase-firestore"
-import { ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "firebase-storage"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js"
+import { setDoc, doc, getDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js"
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js"
 
 const registerAccountForm = document.querySelector('#register-modal')
 const loginAccountForm = document.querySelector('#login-modal')
