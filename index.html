@@ -69,6 +69,7 @@
 
 <body class="deep-purple">
 
+
     <!-- Desktop navbar-->
     <nav>
         <div class="nav-wrapper deep-purple lighten-1">
@@ -83,8 +84,22 @@
                     <a href="#">See posts</a>
                 </li>
                 <li data-js="logged-in" data-role="user">
-                    <a href="#" class="modal-trigger" data-target="account-modal">My account</a>
+                    <a href="#" class="dropdown-trigger btn purple lighten-1" data-target="dropdown-one">My account</a>
                 </li>
+
+                <ul id="dropdown-one" class="dropdown-content">
+                    <li data-js="logged-in" data-role="user">
+                        <a href="#" class="modal-trigger" data-target="account-modal">
+                            My account
+                        </a>
+                    </li>
+                    <li data-js="logged-in" data-role="user">
+                        <a href="#" class="modal-trigger" data-target="liked-posts-modal"> 
+                            Liked Posts
+                        </a>
+                    </li>
+                </ul>
+
                 <li data-js="logged-in" data-role="user">
                     <a href="#" class="loggout" data-js="loggout-button">Logout</a>
                 </li>
@@ -102,7 +117,7 @@
     </nav>
 
     <!-- Sidenav (mobile) -->
-    <ul class="sidenav deep-purple lighten-1" id="mobile" data-js="nav-bar">
+    <ul class="sidenav deep-purple lighten-1" id="mobile" data-js="nav-bar" style="display: none;">
         <li data-js="logged-in" data-role="user"><a href="#" class="white-text">Create new post</a></li>
         <li data-js="logged-in" data-role="user"><a href="#" class="white-text">See posts</a></li>
         <li data-js="logged-in" data-role="user"><a href="#" class="modal-trigger white-text" data-target="account-modal">My Account</a></li>
@@ -240,75 +255,28 @@
         </div>
     </div>
 
+    <!-- User's liked posts -->
+    <div id= "liked-posts-modal" class="modal">
+        <div class="modal-content center-align">
+            <h3>Posts that you liked</h3>
+            <h6>If some posts doesn't appear here, this means that the post was deleted. </h6>
+        </div>
+    </div>
+
     <!-- Post sections -->
     <!-- Desktop content -->
     <div class="container hide-on-med-and-down">
-        <div class="row desktop-items">
-            <!-- <div class="col s6">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="images/first-image.jpg" class="responsive-image">
-                        <span class="card-title">Lorem</span>
-                        <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
-                    </div>
-                    <div class="card-content">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam, ex!</p>
-                        <div class="chip" style="margin-top: 10px;">
-                            <img src="images/user-photo.jpg" alt="">
-                            <span>Posted by gonssalviz</span>
-                        </div>
-                    </div>
-
-                    <div class="card-reveal">
-                        <span class="card-title"><i class="material-icons">close</i></span>
-                        <h5>Lorem, ipsum dolor.</h5>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
-
-                        <div class="chip">
-                            <img src="images/user-photo.jpg" alt="">
-                            <span>Posted by gonssalviz</span>
-                        </div>
-
-                        <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
-                    </div>
-
-                </div>
-            </div> -->
-
+        <div class="row desktop-items">>
         </div>
     </div>
 
     <!-- Mobile content -->
     <div class="container hide-on-large-only show-on-med-and-down">
         <div class="row mobile-items">
-            <div class="col m12">
-                <!-- <div class="card">
-                    <div class="card-image">
-                        <img src="images/first-image.jpg" class="responsive-image">
-                        <span class="card-title">Lorem Mobile</span>
-                    </div>
-                    <div class="card-content">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam, ex!</p>
-                    </div>
-                </div>
-                <div class="card-reveal">
-
-                </div>
-            </div>
-            <div class="col m12">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="images/second-image.jpg">
-                        <span class="card-title">Lorem Mobile</span>
-                    </div>
-                    <div class="card-content">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, ex.</p>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 
+    </div>
       
     <!-- Compiled and minified JavaScript -->
     <script src="app.js" type="module"></script>
@@ -330,7 +298,10 @@
             const tooltips = document.querySelectorAll('.tooltipped')
             M.Tooltip.init(tooltips)
 
-            // M.Modal.getInstance(document.querySelectorAll('.modal')[3]).open()
+            const dropdowns = document.querySelectorAll('.dropdown-trigger')
+            M.Dropdown.init(dropdowns)
+
+            M.Modal.getInstance(document.querySelectorAll('.modal')[4]).open()
         })
     </script>
 </body>

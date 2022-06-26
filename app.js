@@ -1,4 +1,5 @@
 import { db, auth, storage } from './auth.js'
+import { addClass, removeClass, setupNavbar } from './utils.js'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js"
 import { setDoc, doc, getDoc, getDocs, updateDoc, collection, query, onSnapshot } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js"
 import { ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js"
@@ -17,121 +18,79 @@ const userProfilePicture = document.querySelector('.user-logo')
 
 const navbar = document.querySelectorAll('[data-js="nav-bar"]')
 
-let userUid = null
+let currentUser = null
 
-onAuthStateChanged(auth, async (user) => {
+const setupUserExperience = async (user) => {
+    userProfilePicture.src = auth.currentUser.photoURL || userProfilePicture.src
+    currentUser = await user
+    updateDetails()
+}
+
+onAuthStateChanged(auth, (user) => {
     if(user) {
-        setupNavbar(user)
-        userProfilePicture.src = auth.currentUser.photoURL || userProfilePicture.src
-        updateDetails()
-        userUid = user.uid
+        setupUserExperience(user)
+        setupNavbar(user, navbar)
     }else {
-        setupNavbar(user)
+        setupNavbar(user, navbar)
+        desktopItems.innerHTML = ""
+        mobileItems.innerHTML = ""
     }
 })
 
 const updateDetails = () => {
-    onSnapshot(doc(db, "users_posts", auth.currentUser.uid), doc => {
+
+    const { uid } = currentUser
+
+    onSnapshot(doc(db, "users_posts", uid), async doc => {
         desktopItems.innerHTML = ""
-        if(doc.data().posts !== undefined) {
-            const { pictureProfile, username } = doc.data()
-            const post = Object.values(doc.data().posts)
-            const arrays = post.map(array => array)
-            for(let i in arrays) {
-                let img, title, description = null
-                for(let _ in arrays[i]) {
-                    const [x, y, z] = arrays[i]
-                    img = x
-                    title = y
-                    description = z
-                }
 
+        const { pictureProfile, username } = doc.data()
+        const postsData = await doc.data().posts 
 
-                desktopItems.innerHTML += 
-                    `<div class="col s6">
-                        <div class="card">
-                            <div class="card-image">
-                                <img src="${img}">
-                                <span class="card-title">${title}</span>
-                                <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
-                            </div>
-                            <div class="card-content">
-                                <p>${description}</p>
-                                <div class="chip" style="margin-top: 10px;">
-                                    <img src="${pictureProfile}" alt="">
-                                    <span>Posted by ${username}</span>
-                                </div>
-                            </div>
-
-                            <div class="card-reveal">
-                                <span class="card-title"><i class="material-icons">close</i></span>
-                                <h5>Lorem, ipsum dolor.</h5>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
-
-                                <div class="chip">
-                                    <img src="${pictureProfile}" alt="">
-                                    <span>Posted by ${username}</span>
-                                </div>
-
-                                <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
-                            </div>
-
-                        </div>
-                    </div>`
-
-                    mobileItems.innerHTML += 
-                    `<div class="col m12">
-                        <div class="card">
-                            <div class="card-image">
-                                <img src="${img}">
-                                <span class="card-title">${title}</span>
-                                <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
-                            </div>
-                            <div class="card-content">
-                                <p>${description}</p>
-                                <div class="chip" style="margin-top: 10px;">
-                                    <img src="${pictureProfile}" alt="">
-                                    <span>Posted by ${username}</span>
-                                </div>
-                            </div>
-
-                            <div class="card-reveal">
-                                <span class="card-title"><i class="material-icons">close</i></span>
-                                <h5>Lorem, ipsum dolor.</h5>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
-
-                                <div class="chip">
-                                    <img src="${pictureProfile}" alt="">
-                                    <span>Posted by ${username}</span>
-                                </div>
-
-                                <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
-                            </div>
-
-                        </div>
-                    </div`
-            }
-        }else {
-            console.log('Retornado')
+        if(postsData === undefined) {
             return
         }
-    })
-}
 
-const setupNavbar = (user) => {
-    const eachNavBar = [...navbar]
-    eachNavBar.forEach(navbar => {
-        navbar.style.display = 'block'
-        const childrenNavbar = [...navbar.children]
-        childrenNavbar.forEach(li => {
-            const result = li.dataset.js.includes(user ? 'logged-in' : 'logged-out')
-            if(result) {
-                li.style.display = 'block'
-                return
-            }
-            li.style.display = 'none'
+        const postsInArrayFromDatabase = Object.values(postsData)
+        const postsInHTMLFormat = (rowForEachDeviceSize) => 
+            postsInArrayFromDatabase.reduce((acc, value) => {
+                const [img, title, description] = value
 
-        })
+                acc += `<div class="col ${rowForEachDeviceSize}">
+                            <div class="card">
+                                <div class="card-image">
+                                    <img src="${img}">
+                                    <span class="card-title">${title}</span>
+                                    <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
+                                </div>
+                                <div class="card-content">
+                                    <p>${description}</p>
+                                    <div class="chip" style="margin-top: 10px;">
+                                        <img src="${pictureProfile}" alt="">
+                                        <span>Posted by ${username}</span>
+                                    </div>
+                                </div>
+
+                                <div class="card-reveal">
+                                    <span class="card-title"><i class="material-icons">close</i></span>
+                                    <h5>Lorem, ipsum dolor.</h5>
+                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
+
+                                    <div class="chip">
+                                        <img src="${pictureProfile}" alt="">
+                                        <span>Posted by ${username}</span>
+                                    </div>
+
+                                    <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
+                                </div>
+                            </div>
+                        </div>`
+                return acc
+        }, '')
+        
+        desktopItems.innerHTML = postsInHTMLFormat('s6')
+        mobileItems.innerHTML = postsInHTMLFormat('m12')
+
     })
 }
 
@@ -205,41 +164,43 @@ const requestForPostCreation = async (postTitle, postDescription, postImage, new
     const documentSnapshot = await getDoc(doc(db, "users_posts", auth.currentUser.uid))
 
     const createNewPostButton = document.querySelector('[data-js="create-post"]')
-
     const postImageInput = document.querySelector('.file-path')
 
     if(documentSnapshot.exists()) {
+
         const domProgressDetermined = document.querySelector('.determinate')
         const storageReference = ref(storage, `images_posts/${postImage.name}`)
 
         const resultTask = uploadBytesResumable(storageReference, postImage)
         const newElement = document.createElement('span')
-        createNewPostButton.parentElement.classList.add('disabled')
-        
+        addClass(createNewPostButton, 'disabled', true)
+
         resultTask.on('state_changed', (imageSnapshot) => {
+
             const percentage = Math.floor((imageSnapshot.bytesTransferred / imageSnapshot.totalBytes) * 100)
+
             newElement.textContent = `${percentage}%`
             domProgressDetermined.parentElement.insertAdjacentElement('afterend', newElement)
             domProgressDetermined.style.width = `${percentage}%`
-        }, (error) => {
-            console.log(error, error.message, error.code)
+
+        }, (catchError) => {
+            return console.log(catchError)
         }, async () => {
-            console.log(resultTask._metadata.fullPath)
-            const image = await getDownloadURL(ref(storage, resultTask._metadata.fullPath))
-            updateDoc(doc(db, "users_posts", auth.currentUser.uid), {
+
+            const { fullPath } = resultTask._metadata
+            const image = await getDownloadURL(ref(storage, fullPath))
+            await updateDoc(doc(db, "users_posts", auth.currentUser.uid), {
                 [`posts.${newId}`]: [image, `${postTitle.value}`, `${postDescription.value}`]
             })
 
             const postsDataDetails = [postTitle, postDescription, postImageInput]
-            postsDataDetails.map(postsDetails => postsDetails.value = "")
-            // postTitle.value = ""
-            // postDescription.value = ""
-            // postImage.value = ""
+            postsDataDetails.forEach(postsDetails => postsDetails.value = "")
+
             domProgressDetermined.style.width = "0"
             newElement.textContent = "Posted!"
             
             document.documentElement.scrollTo({ top: document.documentElement.scrollHeight - document.documentElement.scrollTop, behavior: 'smooth' })
-            document.querySelector('[data-js="create-post"]').parentElement.classList.remove('disabled')
+            removeClass(createNewPostButton, 'disabled', true)
 
             // let i = 5
             // let interval = null
@@ -260,12 +221,12 @@ const requestForPostCreation = async (postTitle, postDescription, postImage, new
 
 
     }else {
-        setDoc(doc(db, "users_posts", auth.currentUser.uid), {
+        await setDoc(doc(db, "users_posts", auth.currentUser.uid), {
             userUid: auth.currentUser.uid,
             posts: {},
             username: auth.currentUser.displayName,
             pictureProfile: auth.currentUser.photoURL || userProfilePicture.src
-        }).then(() => console.log('Sucesso'))
+        })
     }
 }
 
@@ -328,6 +289,3 @@ inputNewFile.addEventListener('change', async (event) => {
     userProfilePicture.src = url
 
 })
-
-// const x = await getDocs(collection(db, "users_posts"))
-// const index = Math.floor(Math.random() * (x.docs.length - 1 + 1))
