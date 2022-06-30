@@ -1,5 +1,5 @@
-const domParentElement = (element) => element.parentElement?.classList
-const domElement = (element) => element.classList
+const domParentElement = element => element.parentElement.classList
+const domElement = element => element.classList
 
 export const addClass = (element, classToAdd, parentElement = false) => {
     return parentElement 
@@ -16,6 +16,7 @@ export const removeClass = (element, classToRemove, parentElement = false) => {
 export const setupNavbar = (user, ...navbarFromDOM) => {
     const navbars = [...navbarFromDOM]
     const [ navbarLiExtraction ] = navbars
+    
     navbarLiExtraction.forEach(navbar => {
         navbar.style.display = 'block'
         const navbarChildren = [...navbar.children]

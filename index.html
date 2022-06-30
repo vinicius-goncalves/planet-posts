@@ -104,7 +104,7 @@
                     <a href="#" class="loggout" data-js="loggout-button">Logout</a>
                 </li>
                 <li data-js="logged-out" data-role="user">
-                    <a href="#" class="modal-trigger btn purple lighten-1" data-target="login-modal">Login</a>
+                    <a href="#" class="btn purple lighten-1" data-target="login-modal">Login</a>
                 </li>
                 <li data-js="logged-out" data-role="user">
                     <a href="#" 
@@ -118,11 +118,21 @@
 
     <!-- Sidenav (mobile) -->
     <ul class="sidenav deep-purple lighten-1" id="mobile" data-js="nav-bar" style="display: none;">
-        <li data-js="logged-in" data-role="user"><a href="#" class="white-text">Create new post</a></li>
-        <li data-js="logged-in" data-role="user"><a href="#" class="white-text">See posts</a></li>
-        <li data-js="logged-in" data-role="user"><a href="#" class="modal-trigger white-text" data-target="account-modal">My Account</a></li>
-        <li data-js="logged-in" data-role="user"><a href="#" class="white-text" data-js="loggout-button">Loggout</a></li>
-        <li data-js="logged-out" data-role="user"><a href="#" class="white-text">Login</a></li>
+        <li data-js="logged-in" data-role="user">
+            <a href="#" class="white-text">Create new post</a>
+        </li>
+        <li data-js="logged-in" data-role="user">
+            <a href="#" class="white-text">See posts</a>
+        </li>
+        <li data-js="logged-in" data-role="user">
+            <a href="#" class="modal-trigger white-text" data-target="account-modal">My Account</a>
+        </li>
+        <li data-js="logged-in" data-role="user">
+            <a href="#" class="white-text" data-js="loggout-button">Loggout</a>
+        </li>
+        <li data-js="logged-out" data-role="user">
+            <a href="#" class="white-text modal-trigger" data-target="login-modal">Login</a>
+        </li>
         <li data-js="logged-out" data-role="user">
             <a href="#" data-target="register-modal" 
                 class="btn waves-effect purple lighten-1 white-text modal-trigger">Register</a>
@@ -263,9 +273,9 @@
         </div>
     </div>
 
-    <!-- Post sections -->
+    <!---------------- Post sections ----------------->
     <!-- Desktop content -->
-    <div class="container hide-on-med-and-down">
+    <div class="container show-on-large hide-on-med-and-down">
         <div class="row desktop-items">>
         </div>
     </div>
@@ -275,7 +285,18 @@
         <div class="row mobile-items">
         </div>
     </div>
-
+    <!---------------- Post sections ----------------->
+    
+    <!---------------- Utils ----------------->
+    <div class="modal" id="details-recovered">
+        <div class="modal-content center-align ">
+            <h4>We recovered your details</h4>
+            <h6 class="details-localstorage">Would you like to sign in with them?</h6>
+            <div class="center-align" style="display: flex; justify-content: space-evenly;">
+                <a href="#" class="btn purple darken-1" id="confirmation-for-login-localstorage">Yes, please</a>
+                <a href="#" class="btn purple darken-1" id="negation-for-login-localstorage">No, clear my data</a>
+            </div>
+        </div>
     </div>
       
     <!-- Compiled and minified JavaScript -->
@@ -301,7 +322,7 @@
             const dropdowns = document.querySelectorAll('.dropdown-trigger')
             M.Dropdown.init(dropdowns)
 
-            M.Modal.getInstance(document.querySelectorAll('.modal')[4]).open()
+            // M.Modal.getInstance(document.querySelectorAll('.modal')[5]).open()
         })
     </script>
 </body>
