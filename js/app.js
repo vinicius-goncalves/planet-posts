@@ -1,5 +1,7 @@
 import { db, auth, storage } from './auth.js'
-import { addClass, removeClass, setupNavbar } from './utils.js'
+import { addClass, removeClass } from './utils.js'
+import { setupNavbar } from './user-experience.js'
+
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js"
 import { setDoc, doc, getDoc, getDocs, updateDoc, collection, query, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js'
 import { ref, uploadBytes, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js'
@@ -26,18 +28,13 @@ const setupUserExperience = async (user) => {
     updateDetails()
 }
 
-const cssProperties = {
-    color: 'red',
-    backgroundColor: 'blue',
-    marginTop: '10px'
-}
 
-const upperCaseLetters = 
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 
-    'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 
-    'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+const jsPropertiesTransform = (obj) => {
 
-const properties = (obj) => {
+    const upperCaseLetters = 
+        ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 
+        'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 
+        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
     const cssPropertiesToArray = Object.entries(obj)
 
@@ -65,9 +62,8 @@ const properties = (obj) => {
 
 }
 
+const createElement = (elementName, textContent, style, classes) => {
 
-
-const createElement = (elementName, textContent, style, ...classes) => {
     const newElement = document.createElement(elementName)
     newElement.textContent = textContent
     newElement.classList.add(...classes)
@@ -93,10 +89,8 @@ onAuthStateChanged(auth, (user) => {
         createElement(
             'h5', 
             'Please, login in your account to see the posts.', 
-            properties({ marginTop: '50px' }), 
-            'user-login-information', 
-            'center-align', 
-            'white-text')
+            jsPropertiesTransform({ marginTop: '50px' }), 
+            ['user-login-information', 'center-align', 'white-text'])
         
     }
 })
@@ -165,31 +159,7 @@ const updateDetails = () => {
 
 const newElement = document.createElement('p')
 
-navbar.forEach(navbar => {
-    navbar.addEventListener('click', (event) => {
-        if(event.target.dataset.target === "login-modal") {
-            M.Modal.getInstance(document.querySelector('#login-modal')).open()
-            if(localStorage.getItem('userdetails')) {
-                M.Modal.getInstance(document.querySelector('#login-modal')).close()
-                M.Modal.getInstance(document.querySelector('#details-recovered')).open()
 
-                const userDetailsFromStorage = JSON.parse(localStorage.getItem('userdetails'))
-                console.log(userDetailsFromStorage)
-
-                const selectorDetailsRecoveredForAppendElement = document.querySelector('.details-localstorage')
-
-                
-                newElement.textContent = userDetailsFromStorage.email
-
-                selectorDetailsRecoveredForAppendElement.insertAdjacentElement('afterend', newElement)
-            }
-        }
-
-        if(event.target.dataset.js === "loggout-button") {
-            signOut(auth)
-        }
-    })
-})
 
 document.querySelector('#details-recovered').addEventListener('click', event => {
     const userDetailsFromStorage = JSON.parse(localStorage.getItem('userdetails'))
