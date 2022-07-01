@@ -89,12 +89,12 @@
 
                 <ul id="dropdown-one" class="dropdown-content">
                     <li data-js="logged-in" data-role="user">
-                        <a href="#" class="modal-trigger" data-target="account-modal">
+                        <a href="#" class="modal-trigger white lighten-1 purple-text" data-target="account-modal">
                             My account
                         </a>
                     </li>
                     <li data-js="logged-in" data-role="user">
-                        <a href="#" class="modal-trigger" data-target="liked-posts-modal"> 
+                        <a href="#" class="modal-trigger white purple-text" data-target="liked-posts-modal"> 
                             Liked Posts
                         </a>
                     </li>
@@ -260,8 +260,8 @@
                 <i class="material-icons camera-icon">photo_camera</i>
                 <input type="file" id="send-image-profile">
             </div>
-            <h4>User name</h4>
-            <p>User email</p>
+            <h4 class="username-account-modal">User name</h4>
+            <p class="email-account-modal">User email</p>
         </div>
     </div>
 
@@ -273,9 +273,9 @@
         </div>
     </div>
 
-    <!---------------- Post show-on-large hide-on-med-and-down sections ----------------->
+    <!---------------- Post sections ----------------->
     <!-- Desktop content -->
-    <div class="container ">
+    <div class="container show-on-large hide-on-med-and-down">
         <div class="row desktop-items">>
         </div>
     </div>
@@ -300,9 +300,9 @@
     </div>
       
     <!-- Compiled and minified JavaScript -->
-    <script src="/js/app.js" type="module"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.8/purify.min.js" integrity="sha512-M72KfQy4kPuLYC6CeTrN0eA17U1lXEMrr5qEJC/40CLdZGC3HpwPS0esQLqBHnxty2FIcuNdP9EqwSOCLEVJXQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/js/app.js" type="module"></script>
     <script>
         'use strict'
 

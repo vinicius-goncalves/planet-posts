@@ -1,8 +1,8 @@
 import { db, auth, storage } from './auth.js'
 import { addClass, removeClass } from './utils.js'
-import { setupNavbar } from './user-experience.js'
+import { setupNavbar, updateUserDetails } from './user-experience.js'
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from 'https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js'
 import { setDoc, doc, getDoc, getDocs, updateDoc, collection, query, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js'
 import { ref, uploadBytes, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.8.3/firebase-storage.js'
 
@@ -20,12 +20,24 @@ const userProfilePicture = document.querySelector('.user-logo')
 
 const navbar = document.querySelectorAll('[data-js="nav-bar"]')
 
+const usernameModal = document.querySelector('.username-account-modal')
+const emailModal = document.querySelector('.email-account-modal')
+
 let currentUser = null
 
+console.log(DOMPurify.sanitize('<img src="somewhere" onerror="alert("catch")/>'))
+
 const setupUserExperience = async (user) => {
+    const { displayName, email } = user
     userProfilePicture.src = auth.currentUser.photoURL || userProfilePicture.src
     currentUser = await user
     updateDetails()
+    const x = updateUserDetails(user, () => {
+        usernameModal.textContent = displayName
+        emailModal.textContent = email
+    }, () => {
+        return 'An error ocurr'
+    })
 }
 
 const jsPropertiesTransform = (obj) => {
@@ -221,7 +233,6 @@ const updateDetails = () => {
 
         posts('s6').map(post => desktopItems.append(post))
         posts('m12').map(post => mobileItems.append(post))
-        
 
     })
 }
@@ -323,7 +334,9 @@ const requestForPostCreation = async (postTitle, postDescription, postImage, new
             const { fullPath } = resultTask._metadata
             const image = await getDownloadURL(ref(storage, fullPath))
             await updateDoc(doc(db, "users_posts", auth.currentUser.uid), {
-                [`posts.${newId}`]: [image, `${postTitle.value}`, `${postDescription.value}`]
+                [`posts.${newId}`]: 
+                    [image, `${DOMPurify.sanitize(postTitle.value)}`,
+                     `${DOMPurify.sanitize(postDescription.value)}`]
             })
 
             const postsDataDetails = [postTitle, postDescription, postImageInput]
@@ -391,9 +404,8 @@ const sendNewProfilePictureToDatabase = async (photo) => {
     const fileToDownload = await getDownloadURL(pictureProfileReference, fullPath)
 
     await updateProfile(auth.currentUser, { photoURL: fileToDownload })
-    await updateDoc(doc(db, "users_posts", userUid), {
+    await updateDoc(doc(db, "users_posts", currentUser.uid), {
         pictureProfile: fileToDownload })
-
 }
 
 inputNewFile.addEventListener('change', async (event) => {    

@@ -1,3 +1,6 @@
+import { auth } from './auth.js'
+import { signOut } from 'https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js'
+
 const navbar = document.querySelectorAll('[data-js="nav-bar"]')
 
 export const setupNavbar = (user, ...navbarFromDOM) => {
@@ -14,7 +17,6 @@ export const setupNavbar = (user, ...navbarFromDOM) => {
     })
 }
 
-
 const newElement = document.createElement('p')
 
 
@@ -30,7 +32,6 @@ navbar.forEach(navbar => {
                 console.log(userDetailsFromStorage)
 
                 const selectorDetailsRecoveredForAppendElement = document.querySelector('.details-localstorage')
-
                 
                 newElement.textContent = userDetailsFromStorage.email
 
@@ -43,3 +44,9 @@ navbar.forEach(navbar => {
         }
     })
 })
+
+export const updateUserDetails = (condition, callbackResolve, callbackReject) => {
+    new Promise((resolve, reject) => {
+        return condition ? callbackResolve(resolve) : callbackReject(reject)
+    })
+}
