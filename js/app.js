@@ -113,52 +113,118 @@ const updateDetails = () => {
             return
         }
 
-        const postsInArrayFromDatabase = Object.values(postsData)
-        const postsInHTMLFormat = rowForEachDeviceSize => 
-            postsInArrayFromDatabase.reduce((acc, value) => {
-                const [img, title, description] = value
+        const postsToArray = Object.values(postsData)
+        const posts = (deviceWidth) => postsToArray.map(post => {
+            const [ img, title, description ] = post
+            
+            const divElement = document.createElement('div')
+            divElement.classList.add('col', deviceWidth)
 
-                acc += `<div class="col ${rowForEachDeviceSize}">
-                            <div class="card z-depth-3">
-                                <div class="card-image">
-                                    <img src="${img}">
-                                    <span class="card-title">${title}</span>
-                                    <a class="btn-floating halfway-fab purple waves-effect activator right tooltipped" data-position="right" data-tooltip="More details"><i class="material-icons">info</i></a>
-                                </div>
-                                <div class="card-content">
-                                    <p>${description}</p>
-                                    <div class="chip" style="margin-top: 10px;">
-                                        <img src="${pictureProfile}" alt="">
-                                        <span>Posted by ${username}</span>
-                                    </div>
-                                </div>
+            const cardElement = document.createElement('div')
+            cardElement.classList.add('card', 'z-depth-3')
+            divElement.append(cardElement)
 
-                                <div class="card-reveal">
-                                    <span class="card-title"><i class="material-icons">close</i></span>
-                                    <h5>Lorem, ipsum dolor.</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?</p>
+            const cardImage = document.createElement('div')
+            cardImage.classList.add('card-image')
+            cardElement.append(cardImage)
 
-                                    <div class="chip">
-                                        <img src="${pictureProfile}" alt="">
-                                        <span>Posted by ${username}</span>
-                                    </div>
+            const image = document.createElement('img')
+            image.src = img
+            cardImage.append(image)
 
-                                    <a href="#" class="btn purple lighten-1 waves-effect" style="display: block; margin-top: 10px;"><i class="material-icons left">thumb_up</i>I liked it</a>
-                                </div>
-                            </div>
-                        </div>`
-                return acc
-        }, '')
+            const span = document.createElement('span')
+            span.classList.add('card-title')
+            span.textContent = title
+            cardImage.append(span)
+            
+            const aElement = document.createElement('a')
+            aElement.classList.add('btn-floating', 'halfway-fab', 'purple', 'waves-effect', 'activator', 'rigth', 'tooltipped')
+            aElement.dataset.position = 'right'
+            aElement.dataset.tooltip = 'More details'
+            cardImage.append(aElement)
+
+            const iElement = document.createElement('i')
+            iElement.classList.add('material-icons')
+            iElement.textContent = 'info'
+            aElement.append(iElement)
+
+            const cardContent = document.createElement('div')
+            cardContent.classList.add('card-content')
+            cardElement.append(cardContent)
+            
+            const p = document.createElement('p')
+            p.textContent = description
+            cardContent.append(p)
+
+            const chip = document.createElement('div')
+            chip.classList.add('chip')
+            chip.style.marginTop = '10px'
+            cardContent.append(chip)
+            
+            const chipImage = document.createElement('img')
+            chipImage.src = pictureProfile
+            chip.append(chipImage)
+
+            const postedBy = document.createElement('span')
+            postedBy.textContent = `Posted by: ${username}`
+            chip.append(postedBy)
+
+            const cardReveal = document.createElement('div')
+            cardReveal.classList.add('card-reveal')
+            cardElement.append(cardReveal)
+
+            const cardTitleCardReveal = document.createElement('span')
+            cardTitleCardReveal.classList.add('card-title')
+            cardReveal.append(cardTitleCardReveal)
+            
+            const iElementCardReveal = document.createElement('i')
+            iElementCardReveal.classList.add('material-icons')
+            iElementCardReveal.textContent = 'close'
+            cardTitleCardReveal.append(iElementCardReveal)
+
+            const h5CardReveal = document.createElement('h5')
+            h5CardReveal.textContent = 'Lorem, ipsum dolor.'
+            cardReveal.append(h5CardReveal)
+
+            const pCardReveal = document.createElement('p')
+            pCardReveal.textContent = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, nisi facilis? Accusamus velit quas omnis? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam minus cupiditate nemo quas nihil eius?'
+            cardReveal.append(pCardReveal)
+
+            const chipCardReveal = document.createElement('div')
+            chipCardReveal.classList.add('chip')
+            cardReveal.append(chipCardReveal)
+
+            const imgChipCardReveal = document.createElement('img')
+            imgChipCardReveal.src = pictureProfile
+            chipCardReveal.append(imgChipCardReveal)
+
+            const spanChipCardReveal = document.createElement('span')
+            spanChipCardReveal.textContent = `Posted by ${username}`
+            chipCardReveal.append(spanChipCardReveal)
+            
+            const aChipCardReveal = document.createElement('a')
+            aChipCardReveal.href = '#'
+            aChipCardReveal.classList.add('btn', 'purple', 'lighten-1', 'waves-effect', 'center-align')
+            aChipCardReveal.style.display = 'block'
+            aChipCardReveal.style.marginTop = '10px'
+            aChipCardReveal.textContent = 'I liked it'
+            chipCardReveal.append(aChipCardReveal)
+            
+            const iElementToaElementChipCardReveal = document.createElement('i')
+            iElementToaElementChipCardReveal.classList.add('material-icons', 'right')
+            iElementToaElementChipCardReveal.textContent = 'thumb_up'
+            aChipCardReveal.append(iElementToaElementChipCardReveal)
+
+            return divElement
+
+        })
+
+        posts('s6').map(post => desktopItems.append(post))
+        posts('m12').map(post => mobileItems.append(post))
         
-        desktopItems.innerHTML = postsInHTMLFormat('s6')
-        mobileItems.innerHTML = postsInHTMLFormat('m12')
 
     })
 }
-
-const newElement = document.createElement('p')
-
-
 
 document.querySelector('#details-recovered').addEventListener('click', event => {
     const userDetailsFromStorage = JSON.parse(localStorage.getItem('userdetails'))
@@ -291,14 +357,14 @@ const requestForPostCreation = async (postTitle, postDescription, postImage, new
 
 createNewPostContainer.addEventListener('click', event => {
     
+    const postTitle = createNewPostContainer.querySelector('[name="post_title"]')
+    const postDescription = createNewPostContainer.querySelector('[name="post_description"]')
+    const postImage = imageSendInput.files[0]
+    
     if(event.target.id === "generate-lorem-button"){
         postTitle.value = "Lorem ipsum dolor sit amet."
         postDescription.value = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora, libero!"
     }
-
-    const postTitle = createNewPostContainer.querySelector('[name="post_title"]')
-    const postDescription = createNewPostContainer.querySelector('[name="post_description"]')
-    const postImage = imageSendInput.files[0]
 
     const postsDetails = [postTitle.value, postDescription.value]
     if(postsDetails.includes('') || postImage === undefined) {

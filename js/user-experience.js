@@ -14,6 +14,10 @@ export const setupNavbar = (user, ...navbarFromDOM) => {
     })
 }
 
+
+const newElement = document.createElement('p')
+
+
 navbar.forEach(navbar => {
     navbar.addEventListener('click', (event) => {
         if(event.target.dataset.target === "login-modal") {
