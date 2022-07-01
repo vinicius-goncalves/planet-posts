@@ -28,7 +28,6 @@ const setupUserExperience = async (user) => {
     updateDetails()
 }
 
-
 const jsPropertiesTransform = (obj) => {
 
     const upperCaseLetters = 
