@@ -40,4 +40,4 @@ export const storage = getStorage(app)
 
 ```
 
-> Projeto sob licensa ![GPL v3.](LICENSE.md)
+> Projeto sob licensa [GPL v3.](LICENSE.md)
