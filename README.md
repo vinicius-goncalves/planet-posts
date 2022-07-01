@@ -6,7 +6,7 @@ Este projeto, mais voltado para estudos, consiste em posts com o tema sobre o Un
 - HTML e CSS
 - JavaScript
 
-### Framework e serviços utilizado 
+### Frameworks/serviços utilizado 
 - Materialize
 - Firebase
 
