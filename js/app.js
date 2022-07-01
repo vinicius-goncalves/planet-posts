@@ -49,29 +49,27 @@ const jsPropertiesTransform = (obj) => {
 
     const cssPropertiesToArray = Object.entries(obj)
 
-    const notUpperCase = cssPropertiesToArray.filter(([property]) => {
-        if(!property.match(/[A-Z]/g)) {
-            return property
-        }
+    const notUpperCaseWords = cssPropertiesToArray.filter(([property]) => {
+        return !property.match(/[A-Z]/g) ? property : ''
     }).reduce((acc, item) => {
-        acc += item[0] + ": " + item[1] + "; "
-        return acc
+        return acc += `${item[0]}: ${item[1]}; `        
     }, '')
 
     const result = cssPropertiesToArray.reduce((acc, property) => {
-
+        const charAt = (i) => property[0].charAt(i)
         for(let i = 0; i < property[0].length; i++) {
             if(upperCaseLetters.includes(property[0][i])) {
-                acc += property[0].replace(property[0].charAt(i), '-'+property[0].charAt(i).toLowerCase()) + ": " + property[1] + "; "
+                acc += `${property[0].replace(charAt(i), `-${charAt(i).toLowerCase()}`)}: ${property[1]}; `
             }
         }
-
         return acc
-    }, notUpperCase)
+    }, notUpperCaseWords)
 
     return result
 
 }
+
+jsPropertiesTransform({ color: 'red', backgroundColor: 'blue', marginRight: '10px', background: 'test', marginTop: '10px', fontSize: '32px' })
 
 const createElement = (elementName, textContent, style, classes) => {
 
